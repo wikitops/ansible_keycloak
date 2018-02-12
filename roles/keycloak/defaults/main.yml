@@ -1,0 +1,7 @@
+---
+
+keycloak_version: 3.4.3
+apt_tar_url: "https://downloads.jboss.org/keycloak/3.4.3.Final/keycloak-{{ keycloak_version }}.Final.tar.gz"
+
+keycloak_admin_user: admin
+keycloak_admin_password: 3dXNnyEq

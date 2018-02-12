@@ -1,0 +1,13 @@
+---
+
+- name: reload daemon + restart keycloak
+  systemd:
+    daemon_reload: yes
+    name: keycloak
+    state: restarted
+    enabled: yes
+
+- name: restart keycloak
+  systemd:
+    name: keycloak
+    state: restarted

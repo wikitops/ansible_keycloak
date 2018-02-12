@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=Keycloak
+After=network.target
+
+[Service]
+Type=idle
+ExecStart=/opt/keycloak-{{ keycloak_version }}.Final/bin/standalone.sh -b=0.0.0.0 -c standalone.xml
+TimeoutStartSec=600
+TimeoutStopSec=600
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

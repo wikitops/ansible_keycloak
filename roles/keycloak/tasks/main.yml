@@ -1,0 +1,38 @@
+---
+
+- name: Install prerequisites packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - default-jdk
+
+- name: Ensure Keycloak is not already deployed
+  stat:
+    path: "/opt/keycloak-{{ keycloak_version }}.Final"
+  register: keycloak
+
+- name: Download and extract Keycloak sources
+  unarchive:
+    src: "{{ apt_tar_url }}"
+    dest: /opt
+    remote_src: yes
+    group: root
+    owner: root
+  when: keycloak.stat.isdir is defined and not keycloak.stat.isdir
+
+- name: Create Keycloak Admin user
+  command: bin/add-user-keycloak.sh -r master -u {{ keycloak_admin_user }} -p {{ keycloak_admin_password }}
+  args:
+    chdir: "/opt/keycloak-{{ keycloak_version }}.Final"
+  notify: restart keycloak
+  when: keycloak.stat.isdir is defined and not keycloak.stat.isdir
+
+- name: Deploy Systemd service
+  template:
+    src: "lib/systemd/system/keycloak.service.j2"
+    dest: "/lib/systemd/system/keycloak.service"
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload daemon + restart keycloak
